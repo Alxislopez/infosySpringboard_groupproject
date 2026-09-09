@@ -68,15 +68,28 @@ with tab2:
     st.divider()
 
     # 2. Calculate Risk
-    risk_score = calculate_risk(market_competition, team_expertise, resource_availability, innovation_level, market_research)
+    risk_result = calculate_risk(market_competition, team_expertise, resource_availability, innovation_level, market_research)
+    risk_score = risk_result["score"]
+    five_risks = risk_result["details"]
     risk_status = get_risk_status(risk_score)
     success_probability = calculate_success_probability(risk_score)
 
     # 3. Display Risk
-    st.subheader("Risk Score")
+    st.subheader("Risk Score & Breakdown")
+    
+    # Show the 5 risks
+    r1, r2, r3, r4, r5 = st.columns(5)
+    r1.metric("Market Risk", f"{five_risks['Market Risk']}/5")
+    r2.metric("Financial Risk", f"{five_risks['Financial Risk']}/5")
+    r3.metric("Competition", f"{five_risks['Competition Risk']}/5")
+    r4.metric("Technical", f"{five_risks['Technical Risk']}/5")
+    r5.metric("Operational", f"{five_risks['Operational Risk']}/5")
+    
+    st.write("---")
+
     col_r1, col_r2 = st.columns(2)
     with col_r1:
-        st.metric("Overall Risk Score", risk_score)
+        st.metric("Overall Risk Score", f"{risk_score:.1f}/5")
     with col_r2:
         if risk_status == "HIGH RISK":
             st.error(risk_status)
@@ -120,18 +133,38 @@ with tab2:
 
     # 6. Feasibility Assessment
     st.header("Project Feasibility")
-    market_opportunity = st.slider("Market Opportunity", 0, 100, 50)
-    team_capability = st.slider("Team Capability", 0, 100, 50)
-    competitive_advantage = st.slider("Competitive Advantage", 0, 100, 50)
-    resource_score = st.slider("Resource Availability (Feasibility)", 0, 100, 50)
 
-    feasibility_score = calculate_feasibility(market_opportunity, team_capability, competitive_advantage, resource_score)
+    feasibility_score = calculate_feasibility(risk_score, swot)
     st.metric("Feasibility Score", f"{feasibility_score}%")
+    st.write("Feasibility is calculated automatically based on the Overall Risk Score and the balance of SWOT factors.")
 
 # ----------------- TAB 3: RECOMMENDATIONS -----------------
 with tab3:
-    st.header("Recommendations")
-    st.info("AI-powered recommendations will be implemented in future milestones.")
+    st.header("Final Recommendation")
+    
+    if feasibility_score >= 80:
+        recommendation = "Highly Feasible"
+        st.success(f"### {recommendation}")
+        st.write("The project shows high feasibility with manageable risks and strong market potential.")
+    elif feasibility_score >= 60:
+        recommendation = "Feasible"
+        st.info(f"### {recommendation}")
+        st.write("The project is feasible but has some risks. Please review the Weaknesses and Threats in the SWOT analysis.")
+    elif feasibility_score >= 40:
+        recommendation = "Moderately Feasible"
+        st.warning(f"### {recommendation}")
+        st.write("The project has moderate to high risks. Develop a mitigation plan before proceeding.")
+    else:
+        recommendation = "Not Feasible"
+        st.error(f"### {recommendation}")
+        st.write("The project's risks outweigh its strengths. It is highly recommended to pivot or re-evaluate the core business model before proceeding.")
+        
+    st.divider()
+    st.subheader("Key Factors Driving This Recommendation")
+    st.write(f"- **Feasibility Score:** {feasibility_score}%")
+    st.write(f"- **Overall Risk:** {risk_status} ({risk_score:.1f}/5)")
+    st.write(f"- **Key Strengths/Opportunities:** {len(swot['Strengths']) + len(swot['Opportunities'])} factors")
+    st.write(f"- **Key Weaknesses/Threats:** {len(swot['Weaknesses']) + len(swot['Threats'])} factors")
 
 # ----------------- TAB 4: DASHBOARD -----------------
 with tab4:
