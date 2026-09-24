@@ -16,22 +16,22 @@ st.markdown("""
 @import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --red:           #ef4444;   /* vibrant red accent */
-  --red-dark:      #dc2626;   /* deeper red for hover */
-  --blue-link:     #60a5fa;   /* light blue for links */
-  --bg:            #020617;   /* deep dark blue background */
-  --surface:       #0f172a;   /* dark blue surface for cards */
-  --border:        #1e293b;   /* subtle dark border */
-  --border-strong: #334155;   /* stronger dark border */
-  --text-1:        #f8fafc;   /* bright primary text */
-  --text-2:        #cbd5e1;   /* soft secondary text */
-  --text-3:        #94a3b8;   /* muted text */
-  --green-bg:      #064e3b;
-  --green-fg:      #34d399;
-  --r-sm: 6px; --r-md: 8px; --r-lg: 12px;
-  --sh-xs: 0 1px 3px rgba(0,0,0,0.4);
-  --sh-sm: 0 2px 8px rgba(0,0,0,0.5);
-  --sh-hover: 0 6px 20px rgba(0,0,0,0.6);
+  --red:           #FF0055;   /* vibrant neon pink/red accent */
+  --red-dark:      #E6004C;   /* deeper neon for hover */
+  --blue-link:     #00EEFF;   /* vibrant cyan for links */
+  --bg:            #000000;   /* absolute OLED black */
+  --surface:       #111111;   /* distinct deep grey for cards */
+  --border:        #222222;   /* crisp borders */
+  --border-strong: #333333;   
+  --text-1:        #FFFFFF;   /* pure white primary text */
+  --text-2:        #CCCCCC;   /* high contrast secondary text */
+  --text-3:        #888888;   
+  --green-bg:      #052211;   
+  --green-fg:      #00FF66;   /* neon green */
+  --r-sm: 8px; --r-md: 12px; --r-lg: 16px;
+  --sh-xs: 0 1px 3px rgba(0,0,0,0.8);
+  --sh-sm: 0 4px 12px rgba(0,0,0,0.9);
+  --sh-hover: 0 8px 30px rgba(255, 0, 85, 0.35);
 }
 
 /* Base */
@@ -62,7 +62,7 @@ section[data-testid="stMain"] > div {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0 4px 16px rgba(239, 68, 68, 0.25);
+  box-shadow: 0 8px 32px rgba(255, 0, 85, 0.3);
   overflow: hidden;
   position: relative;
 }
@@ -102,7 +102,7 @@ section[data-testid="stMain"] > div {
   background: var(--red) !important;
   color: #fff !important; font-weight: 600 !important;
   border-radius: 16px !important;
-  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.35);
+  box-shadow: 0 4px 16px rgba(255, 0, 85, 0.4);
 }
 
 /* ── Cards ── */
@@ -130,10 +130,10 @@ div[data-testid="stVerticalBlockBorderWrapper"]
   border-radius: var(--r-sm) !important;
   padding: 8px 18px !important;
   font-size: 13px !important; font-weight: 600 !important;
-  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.28);
+  box-shadow: 0 4px 12px rgba(255, 0, 85, 0.3);
   transition: all 0.18s ease;
 }
-.stButton > button:hover { background: var(--red-dark) !important; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(239, 68, 68, 0.38) !important; }
+.stButton > button:hover { background: var(--red-dark) !important; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(255, 0, 85, 0.5) !important; }
 .stButton > button:active { transform: none; }
 
 /* ── Metrics ── */
@@ -158,10 +158,12 @@ div[data-testid="stVerticalBlockBorderWrapper"]
 .stNumberInput > div > div > input:focus,
 .stTextArea > div > div > textarea:focus {
   border-color: var(--red) !important;
-  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12) !important;
+  box-shadow: 0 0 0 3px rgba(255, 0, 85, 0.2) !important;
 }
 .stSelectbox > div > div { border-radius: var(--r-sm) !important; border: 1.5px solid var(--border) !important; font-size: 13px !important; background: var(--surface) !important; color: var(--text-1) !important; }
-div[data-baseweb="select"] div { color: var(--text-1) !important; background-color: var(--surface); }
+div[data-baseweb="select"] div { color: var(--text-1) !important; background-color: transparent !important; }
+ul[role="listbox"] li { color: #000000 !important; }
+ul[role="listbox"] li:hover, ul[role="listbox"] li[aria-selected="true"] { background-color: #000000 !important; color: var(--red) !important; }
 label[data-testid="stWidgetLabel"] p { font-size: 12.5px !important; font-weight: 500 !important; color: var(--text-2) !important; }
 
 /* ── Progress bar ── */
@@ -431,69 +433,62 @@ with tab3:
 # TAB 4 — DASHBOARD
 # ─────────────────────────────────────────────────────────────────────────────
 with tab4:
-    col_left, col_mid, col_right = st.columns([1.2, 2.5, 1.2], gap="large")
+    st.subheader("Risk Analytics Dashboard")
+    st.caption("Comprehensive overview of project viability, risks, and market trends.")
+    st.write("---")
 
-    with col_left:
-        st.subheader("Project Submission")
-        st.caption("Latest submitted project")
-        st.write("---")
-        try:
-            supabase = get_supabase_client()
-            response = supabase.table("projects").select("*").order("id", desc=True).limit(1).execute()
-            if response.data:
-                latest = response.data[0]
-                st.caption("Startup / Project Name")
-                st.write(f"**{latest.get('startup_name')}**")
-                st.caption("Industry / Sector")
-                st.write(f"**{latest.get('industry')}**")
-                st.caption("Business Model")
-                st.write(f"**{latest.get('business_model')}**")
-                l_c1, l_c2 = st.columns(2)
-                with l_c1:
-                    st.caption("Target Market")
-                    st.write(f"**{latest.get('target_market')}**")
-                with l_c2:
-                    st.caption("Budget (USD)")
-                    budget_val = latest.get("budget")
-                    st.write(f"**${budget_val:,.0f}**" if budget_val else "**$0**")
-                st.caption("Project Description")
-                st.write(latest.get('project_description') or "No description provided.")
-            else:
-                st.info("No projects found in the database.")
-        except Exception as e:
-            st.error("Database Connection Error")
+    # ── KPI Cards ──
+    kpi1, kpi2, kpi3, kpi4 = st.columns(4)
+    with kpi1:
+        risk_delta = "High Risk" if risk_score > 3.5 else "Moderate Risk" if risk_score > 2 else "Low Risk"
+        st.metric("Overall Risk Score", f"{risk_score:.1f}/5", risk_delta, delta_color="inverse")
+    with kpi2:
+        st.metric("Market Risk", f"{five_risks.get('Market Risk', 0)}/5")
+    with kpi3:
+        st.metric("Technical Risk", f"{five_risks.get('Technical Risk', 0)}/5")
+    with kpi4:
+        st.metric("Success Probability", f"{success_probability}%")
 
-    with col_mid:
-        st.subheader("Market Analysis")
-        st.caption("Market size and growth indicators")
-        st.write("---")
+    st.write("")
+
+    col_dash1, col_dash2 = st.columns([1.5, 1], gap="large")
+
+    with col_dash1:
+        st.subheader("Market Trend Analysis")
+        st.caption("Estimated market size growth (2020–2026)")
         market_data = get_market_summary()
-        m1, m2, m3 = st.columns(3)
-        m1.metric("TAM", f"${market_data['tam']}B",  f"+{market_data['market_growth']}%")
-        m2.metric("SAM", f"${market_data['sam']}M",  "+5.5%")
-        m3.metric("SOM", f"${market_data['som']}M",  "-2.1%")
-        st.write("")
-        st.write("**Market Trends (2020–2026)**")
-        st.caption("Estimated market size trend")
         import pandas as pd
         chart_df = pd.DataFrame(
             {"Market Size ($M)": market_data["market_values"]},
             index=[str(y) for y in market_data["years"]]
         )
-        st.area_chart(chart_df, color="#818cf8")
+        st.area_chart(chart_df, color="#ef4444")
 
-    with col_right:
         st.subheader("Competitor Landscape")
-        st.caption("Key market competitors")
+        m1, m2, m3 = st.columns(3)
+        m1.metric("TAM", f"${market_data['tam']}B",  f"+{market_data['market_growth']}%")
+        m2.metric("SAM", f"${market_data['sam']}M",  "+5.5%")
+        m3.metric("SOM", f"${market_data['som']}M",  "-2.1%")
+
+    with col_dash2:
+        st.subheader("Key Findings")
+        if st.session_state.agent_result:
+            res = st.session_state.agent_result
+            st.success("AI Analysis Complete")
+            for rec in res.get("recommendations", [])[:3]: # top 3
+                st.write(f"• {rec.get('title')}")
+        else:
+            st.info("Run 'Generate Strategic Recommendations' in Tab 3 to unlock AI insights.")
+            st.write("• Market volatility requires attention.")
+            st.write("• Technical execution is critical for success.")
+            st.write("• Monitor competitor growth closely.")
+
         st.write("---")
-        competitors = market_data["competitors"]
-        for comp in competitors:
-            st.write(f"**{comp['company']}**")
-            c1, c2, c3 = st.columns(3)
-            c1.caption("Market Share"); c1.write(f"**{comp['market_share']}%**")
-            c2.caption("Revenue");      c2.write(f"**${comp['revenue']}M**")
-            c3.caption("Growth")
-            gv = comp['growth']
-            c3.write(f"**+{gv}%**" if gv > 0 else f"**{gv}%**")
-            st.progress(comp['market_share'] / 100)
-            st.write("")
+        st.subheader("Strategic Recommendations")
+        if st.session_state.agent_result:
+            for mit in res.get("mitigations", [])[:3]:
+                st.write(f"{list(res.get('mitigations', [])).index(mit) + 1}. **{mit.get('risk_name')}**: {mit.get('mitigation_strategy')}")
+        else:
+            st.write("1. Finalize MVP technical requirements.")
+            st.write("2. Secure initial funding round.")
+            st.write("3. Establish go-to-market strategy.")
