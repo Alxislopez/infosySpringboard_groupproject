@@ -148,22 +148,30 @@ div[data-testid="stVerticalBlockBorderWrapper"]
 /* ── Inputs & Selects ── */
 .stTextInput > div > div > input,
 .stNumberInput > div > div > input,
-.stTextArea > div > div > textarea {
-  border-radius: var(--r-sm) !important; border: 1.5px solid var(--border) !important;
-  font-size: 13px !important; background: var(--surface) !important;
-  color: var(--text-1) !important;
+.stTextArea > div > div > textarea,
+.stSelectbox > div > div {
+  border-radius: var(--r-sm) !important; border: 1.5px solid #ffffff !important;
+  font-size: 13px !important; background-color: #000000 !important;
+  color: #ffffff !important; -webkit-text-fill-color: #ffffff !important;
   transition: border-color 0.15s;
+}
+.stTextInput > div > div > input::placeholder,
+.stNumberInput > div > div > input::placeholder,
+.stTextArea > div > div > textarea::placeholder,
+div[data-baseweb="select"] div[class*="placeholder"] {
+  color: #a1a1aa !important; -webkit-text-fill-color: #a1a1aa !important; opacity: 1 !important;
 }
 .stTextInput > div > div > input:focus,
 .stNumberInput > div > div > input:focus,
-.stTextArea > div > div > textarea:focus {
+.stTextArea > div > div > textarea:focus,
+.stSelectbox > div > div:focus-within {
   border-color: var(--red) !important;
   box-shadow: 0 0 0 3px rgba(255, 0, 85, 0.2) !important;
 }
-.stSelectbox > div > div { border-radius: var(--r-sm) !important; border: 1.5px solid var(--border) !important; font-size: 13px !important; background: var(--surface) !important; color: var(--text-1) !important; }
-div[data-baseweb="select"] div { color: var(--text-1) !important; background-color: transparent !important; }
-ul[role="listbox"] li { color: #000000 !important; }
-ul[role="listbox"] li:hover, ul[role="listbox"] li[aria-selected="true"] { background-color: #000000 !important; color: var(--red) !important; }
+div[data-baseweb="select"], div[data-baseweb="select"] * { background-color: transparent !important; color: #ffffff !important; }
+div[data-baseweb="popover"], div[data-baseweb="popover"] > div, ul[role="listbox"] { background-color: var(--red) !important; border-radius: 8px !important; }
+ul[role="listbox"] li, ul[role="listbox"] li * { color: #000000 !important; background-color: transparent !important; }
+ul[role="listbox"] li:hover, ul[role="listbox"] li[aria-selected="true"], ul[role="listbox"] li:hover * { background-color: rgba(0, 0, 0, 0.15) !important; color: #000000 !important; font-weight: 600 !important; }
 label[data-testid="stWidgetLabel"] p { font-size: 12.5px !important; font-weight: 500 !important; color: var(--text-2) !important; }
 
 /* ── Progress bar ── */
