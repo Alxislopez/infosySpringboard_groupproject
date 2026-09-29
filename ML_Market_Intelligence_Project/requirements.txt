@@ -1,7 +1,12 @@
+
 Flask==3.1.1
 psycopg2-binary==2.9.10
-pandas==2.3.1
 streamlit
-langgraph
+matplotlib
+groq
 langchain
 langchain-groq
+langgraph
+pandas
+numpy
+requests
