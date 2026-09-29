@@ -124,17 +124,22 @@ div[data-testid="stVerticalBlockBorderWrapper"]
 }
 
 /* ── Buttons ── */
-.stButton > button {
+.stButton > button, [data-testid="stFormSubmitButton"] > button, button[data-baseweb="button"] {
   background: var(--red) !important;
-  color: #fff !important; border: none !important;
+  color: #ffffff !important; border: none !important;
   border-radius: var(--r-sm) !important;
   padding: 8px 18px !important;
   font-size: 13px !important; font-weight: 600 !important;
-  box-shadow: 0 4px 12px rgba(255, 0, 85, 0.3);
+  box-shadow: 0 4px 12px rgba(255, 0, 85, 0.3) !important;
   transition: all 0.18s ease;
 }
-.stButton > button:hover { background: var(--red-dark) !important; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(255, 0, 85, 0.5) !important; }
-.stButton > button:active { transform: none; }
+.stButton > button *, [data-testid="stFormSubmitButton"] > button *, button[data-baseweb="button"] * {
+  color: #ffffff !important;
+}
+.stButton > button:hover, [data-testid="stFormSubmitButton"] > button:hover, button[data-baseweb="button"]:hover {
+  background: var(--red-dark) !important; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(255, 0, 85, 0.5) !important;
+}
+.stButton > button:active, [data-testid="stFormSubmitButton"] > button:active { transform: none; }
 
 /* ── Metrics ── */
 [data-testid="stMetric"] {
@@ -168,10 +173,11 @@ div[data-baseweb="select"] div[class*="placeholder"] {
   border-color: var(--red) !important;
   box-shadow: 0 0 0 3px rgba(255, 0, 85, 0.2) !important;
 }
-div[data-baseweb="select"], div[data-baseweb="select"] * { background-color: transparent !important; color: #ffffff !important; }
-div[data-baseweb="popover"], div[data-baseweb="popover"] > div, ul[role="listbox"] { background-color: var(--red) !important; border-radius: 8px !important; }
-ul[role="listbox"] li, ul[role="listbox"] li * { color: #000000 !important; background-color: transparent !important; }
-ul[role="listbox"] li:hover, ul[role="listbox"] li[aria-selected="true"], ul[role="listbox"] li:hover * { background-color: rgba(0, 0, 0, 0.15) !important; color: #000000 !important; font-weight: 600 !important; }
+div[data-baseweb="select"] > div { background-color: transparent !important; color: #ffffff !important; }
+div[data-baseweb="select"] span { color: #ffffff !important; }
+[data-baseweb="popover"], [data-baseweb="popover"] > div, [role="listbox"] { background-color: #ffffff !important; border-radius: 8px !important; border: 1px solid #cccccc !important; }
+[role="listbox"] [role="option"], [role="listbox"] [role="option"] span, [role="listbox"] [role="option"] div { color: #000000 !important; background-color: transparent !important; }
+[role="listbox"] [role="option"]:hover, [role="listbox"] [role="option"][aria-selected="true"], [role="listbox"] [role="option"]:hover span, [role="listbox"] [role="option"][aria-selected="true"] span { background-color: var(--red) !important; color: #ffffff !important; }
 label[data-testid="stWidgetLabel"] p { font-size: 12.5px !important; font-weight: 500 !important; color: var(--text-2) !important; }
 
 /* ── Progress bar ── */
