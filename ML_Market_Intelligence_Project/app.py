@@ -154,6 +154,7 @@ div[data-testid="stVerticalBlockBorderWrapper"]
 .stTextInput > div > div > input,
 .stNumberInput > div > div > input,
 .stTextArea > div > div > textarea,
+.stTextArea textarea, div[data-baseweb="textarea"], div[data-baseweb="textarea"] > textarea,
 .stSelectbox > div > div {
   border-radius: var(--r-sm) !important; border: 1.5px solid #ffffff !important;
   font-size: 13px !important; background-color: #000000 !important;
@@ -259,23 +260,23 @@ with tab1:
     with st.form("project_form"):
         f_col1, f_col2 = st.columns(2, gap="medium")
         with f_col1:
-            startup_name   = st.text_input("Startup Name *", placeholder="e.g. Smart Campus Safety AI")
+            startup_name   = st.text_input("Startup Name *", placeholder="e.g. Smart Campus Safety AI", key="tab1_startup_name")
             industry       = st.selectbox("Industry *", [
                 "Education Technology", "FinTech", "HealthTech", "E-Commerce",
                 "SaaS / B2B Software", "AI / Machine Learning", "Logistics & Supply Chain",
                 "Clean Energy / GreenTech", "Media & Entertainment", "Cybersecurity",
                 "AgriTech", "Real Estate Tech", "Legal Tech", "HR Tech", "Other"
-            ])
+            ], key="tab1_industry")
             business_model = st.selectbox("Business Model *", [
                 "SaaS (Software as a Service)", "B2B (Business to Business)",
                 "B2C (Business to Consumer)", "B2B2C", "Marketplace / Platform",
                 "Subscription", "Freemium", "Ad-Supported", "Transaction / Commission",
                 "Licensing", "Direct Sales", "Other"
-            ])
+            ], key="tab1_business_model")
         with f_col2:
-            target_market   = st.text_input("Target Market",      placeholder="e.g. Colleges & Universities")
-            budget          = st.number_input("Budget ($)", min_value=0.0, step=1000.0)
-        description = st.text_area("Project Description", placeholder="Describe your project goals and approach...", height=90)
+            target_market   = st.text_input("Target Market",      placeholder="e.g. Colleges & Universities", key="tab1_target_market")
+            budget          = st.number_input("Budget ($)", min_value=0.0, step=1000.0, key="tab1_budget")
+        description = st.text_area("Project Description", placeholder="Describe your project goals and approach...", height=90, key="tab1_description")
 
         if st.form_submit_button("💾 Submit Project"):
             if startup_name and industry and business_model:
@@ -378,7 +379,14 @@ with tab3:
 
     if st.button("⚡ Generate Strategic Recommendations"):
         with st.spinner("LangGraph Agent is analyzing risks and generating recommendations…"):
-            project_data = {}
+            project_data = {
+                "startup_name": st.session_state.get("tab1_startup_name", "Unknown"),
+                "industry": st.session_state.get("tab1_industry", "Unknown"),
+                "business_model": st.session_state.get("tab1_business_model", "Unknown"),
+                "target_market": st.session_state.get("tab1_target_market", "Unknown"),
+                "budget": st.session_state.get("tab1_budget", 0),
+                "description": st.session_state.get("tab1_description", "")
+            }
             risk_data    = five_risks
             swot_data    = swot
             st.session_state.agent_result = run_agent(project_data, risk_data, swot_data)
@@ -449,6 +457,18 @@ with tab3:
 with tab4:
     st.subheader("Risk Analytics Dashboard")
     st.caption("Comprehensive overview of project viability, risks, and market trends.")
+    
+    # Display most recent project
+    try:
+        supabase = get_supabase_client()
+        recent = supabase.table("projects").select("*").order("created_at", desc=True).limit(1).execute()
+        if recent.data:
+            rp = recent.data[0]
+            st.info(f"🔥 **Latest Submission:** {rp.get('startup_name')} | **Industry:** {rp.get('industry')} | **Budget:** ${rp.get('budget'):,}")
+    except Exception:
+        # Fallback to session state if DB is empty or errors
+        st.info(f"🔥 **Latest Submission:** {st.session_state.get('tab1_startup_name', 'None')} | **Industry:** {st.session_state.get('tab1_industry', 'None')} | **Budget:** ${st.session_state.get('tab1_budget', 0):,}")
+
     st.write("---")
 
     # ── KPI Cards ──
@@ -470,7 +490,9 @@ with tab4:
     with col_dash1:
         st.subheader("Market Trend Analysis")
         st.caption("Estimated market size growth (2020–2026)")
-        market_data = get_market_summary()
+        industry = st.session_state.get("tab1_industry", "Technology")
+        budget = st.session_state.get("tab1_budget", 100000)
+        market_data = get_market_summary(industry, budget)
         import pandas as pd
         chart_df = pd.DataFrame(
             {"Market Size ($M)": market_data["market_values"]},
