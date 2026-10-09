@@ -6,6 +6,7 @@ from risk_engine import calculate_risk, get_risk_status, calculate_success_proba
 from swot_analysis import generate_swot
 from feasibility import calculate_feasibility
 from recommendations_agent import run_agent
+from report_generator import generate_pdf_report, generate_docx_report
 
 # ─── Page Config ──────────────────────────────────────────────────────────────
 st.set_page_config(page_title="Prediction AI", layout="wide", initial_sidebar_state="collapsed")
@@ -526,5 +527,22 @@ with tab4:
                 st.write(f"{list(res.get('mitigations', [])).index(mit) + 1}. **{mit.get('risk_name')}**: {mit.get('mitigation_strategy')}")
         else:
             st.write("1. Finalize MVP technical requirements.")
-            st.write("2. Secure initial funding round.")
             st.write("3. Establish go-to-market strategy.")
+            
+        st.write("---")
+        st.subheader("Export Report")
+        col_pdf, col_docx = st.columns(2)
+        project_data = {
+            "startup_name": st.session_state.get("tab1_startup_name", "Unknown"),
+            "industry": st.session_state.get("tab1_industry", "Unknown"),
+            "budget": st.session_state.get("tab1_budget", 0),
+            "description": st.session_state.get("tab1_description", "")
+        }
+        
+        pdf_bytes = generate_pdf_report(project_data, five_risks, swot, st.session_state.agent_result, market_data)
+        docx_bytes = generate_docx_report(project_data, five_risks, swot, st.session_state.agent_result, market_data)
+        
+        with col_pdf:
+            st.download_button("📄 Download PDF", data=pdf_bytes, file_name="Risk_Assessment_Report.pdf", mime="application/pdf", use_container_width=True)
+        with col_docx:
+            st.download_button("📝 Download DOCX", data=docx_bytes, file_name="Risk_Assessment_Report.docx", mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document", use_container_width=True)
