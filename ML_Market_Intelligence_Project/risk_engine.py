@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 Alxislopez
+
 def assess_five_risks(
     market_competition,
     team_expertise,

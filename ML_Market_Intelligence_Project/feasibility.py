@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 Alxislopez
+
 def calculate_feasibility(risk_score, swot_data):
     """
     Calculates feasibility score based on overall risk and SWOT results.

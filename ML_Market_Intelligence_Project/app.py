@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 Alxislopez
+
 import streamlit as st
 import matplotlib.pyplot as plt
 from database import get_supabase_client
@@ -141,6 +144,23 @@ div[data-testid="stVerticalBlockBorderWrapper"]
   background: var(--red-dark) !important; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(255, 0, 85, 0.5) !important;
 }
 .stButton > button:active, [data-testid="stFormSubmitButton"] > button:active { transform: none; }
+
+/* ── Download Buttons ── */
+[data-testid="stDownloadButton"] > button {
+  background: #000000 !important;
+  color: #ffffff !important;
+  border: 1.5px solid #ffffff !important;
+}
+[data-testid="stDownloadButton"] > button * {
+  color: #ffffff !important;
+}
+[data-testid="stDownloadButton"] > button:hover {
+  background: #ffffff !important;
+  color: #000000 !important;
+}
+[data-testid="stDownloadButton"] > button:hover * {
+  color: #000000 !important;
+}
 
 /* ── Metrics ── */
 [data-testid="stMetric"] {
@@ -404,7 +424,7 @@ with tab3:
             with st.container(height=560, border=False):
                 for rec in res.get("recommendations", []):
                     with st.container(border=True):
-                        st.markdown(f"<div style='font-size:13.5px;font-weight:600;color:#0f172a;margin-bottom:6px;'>{rec.get('title','Recommendation')}</div>", unsafe_allow_html=True)
+                        st.markdown(f"<div style='font-size:13.5px;font-weight:600;color:#ffffff;margin-bottom:6px;'>{rec.get('title','Recommendation')}</div>", unsafe_allow_html=True)
                         p = rec.get("priority","Medium").lower()
                         if p == "critical":
                             badge = '<span style="background:#fef2f2;color:#b91c1c;padding:3px 8px;border-radius:5px;font-size:11px;font-weight:700;">CRITICAL</span>'
@@ -413,8 +433,8 @@ with tab3:
                         else:
                             badge = '<span style="background:#f0fdf4;color:#15803d;padding:3px 8px;border-radius:5px;font-size:11px;font-weight:700;">MEDIUM</span>'
                         st.markdown(badge, unsafe_allow_html=True)
-                        st.markdown(f"<div style='margin-top:8px;font-size:11.5px;color:#64748b;'><b>Category:</b> {rec.get('category','')}</div>", unsafe_allow_html=True)
-                        st.markdown(f"<div style='margin-top:4px;font-size:13px;color:#334155;line-height:1.5;'>{rec.get('description','')}</div>", unsafe_allow_html=True)
+                        st.markdown(f"<div style='margin-top:8px;font-size:11.5px;color:#cccccc;'><b>Category:</b> {rec.get('category','')}</div>", unsafe_allow_html=True)
+                        st.markdown(f"<div style='margin-top:4px;font-size:13px;color:#ffffff;line-height:1.5;'>{rec.get('description','')}</div>", unsafe_allow_html=True)
 
         # ── Col 2: Risk Mitigation ────────────────────────────────────────────
         with col_mit:
@@ -425,7 +445,7 @@ with tab3:
                 for mit in res.get("mitigations", []):
                     if filter_cat == "All Risks" or mit.get("category","").lower() == filter_cat.lower():
                         with st.container(border=True):
-                            st.markdown(f"<div style='font-size:13.5px;font-weight:600;color:#0f172a;'>🚫 {mit.get('risk_name','Risk')}</div>", unsafe_allow_html=True)
+                            st.markdown(f"<div style='font-size:13.5px;font-weight:600;color:#ffffff;'>🚫 {mit.get('risk_name','Risk')}</div>", unsafe_allow_html=True)
                             impact = mit.get("impact","Medium").lower()
                             if "critical" in impact:
                                 ibadge = '<span style="background:#fef2f2;color:#b91c1c;padding:2px 7px;border-radius:4px;font-size:10.5px;font-weight:600;">Critical Impact</span>'
@@ -434,10 +454,10 @@ with tab3:
                             else:
                                 ibadge = '<span style="background:#eff6ff;color:#1d4ed8;padding:2px 7px;border-radius:4px;font-size:10.5px;font-weight:600;">Medium Impact</span>'
                             st.markdown(ibadge, unsafe_allow_html=True)
-                            st.markdown(f"<div style='margin-top:8px;font-size:13px;color:#334155;'><b>Strategy:</b> {mit.get('mitigation_strategy','')}</div>", unsafe_allow_html=True)
+                            st.markdown(f"<div style='margin-top:8px;font-size:13px;color:#ffffff;'><b>Strategy:</b> {mit.get('mitigation_strategy','')}</div>", unsafe_allow_html=True)
                             with st.expander("View Actions"):
-                                st.markdown(f"<div style='padding:8px;background:#eff6ff;border-radius:6px;margin-bottom:5px;color:#1e40af;font-size:12.5px;'><b>Preventive:</b> {mit.get('preventive_action','')}</div>", unsafe_allow_html=True)
-                                st.markdown(f"<div style='padding:8px;background:#fff7ed;border-radius:6px;color:#92400e;font-size:12.5px;'><b>Contingency:</b> {mit.get('contingency_action','')}</div>", unsafe_allow_html=True)
+                                st.markdown(f"<div style='padding:8px;background:#1e293b;border-radius:6px;margin-bottom:5px;color:#ffffff;font-size:12.5px;'><b>Preventive:</b> {mit.get('preventive_action','')}</div>", unsafe_allow_html=True)
+                                st.markdown(f"<div style='padding:8px;background:#431407;border-radius:6px;color:#ffffff;font-size:12.5px;'><b>Contingency:</b> {mit.get('contingency_action','')}</div>", unsafe_allow_html=True)
 
         # ── Col 3: LangGraph Workflow ─────────────────────────────────────────
         with col_flow:
@@ -447,10 +467,10 @@ with tab3:
             with st.container(height=560, border=False):
                 steps = res.get("workflow_steps", [])
                 for i, step in enumerate(steps):
-                    st.markdown(f"<div style='font-size:13px;font-weight:600;color:#0f172a;'>{step.get('icon','🔹')} {step.get('name','Stage')}</div>", unsafe_allow_html=True)
-                    st.markdown(f"<div style='font-size:11.5px;color:#94a3b8;margin-bottom:4px;'>{step.get('desc','')}</div>", unsafe_allow_html=True)
+                    st.markdown(f"<div style='font-size:13px;font-weight:600;color:#ffffff;'>{step.get('icon','🔹')} {step.get('name','Stage')}</div>", unsafe_allow_html=True)
+                    st.markdown(f"<div style='font-size:11.5px;color:#cccccc;margin-bottom:4px;'>{step.get('desc','')}</div>", unsafe_allow_html=True)
                     if i < len(steps) - 1:
-                        st.markdown('<div style="margin-left:12px;border-left:2px solid #e2e8f0;height:28px;margin-top:-2px;margin-bottom:4px;"></div>', unsafe_allow_html=True)
+                        st.markdown('<div style="margin-left:12px;border-left:2px solid #555555;height:28px;margin-top:-2px;margin-bottom:4px;"></div>', unsafe_allow_html=True)
 
 # ─────────────────────────────────────────────────────────────────────────────
 # TAB 4 — DASHBOARD
